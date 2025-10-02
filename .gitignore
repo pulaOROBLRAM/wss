@@ -1,0 +1,8 @@
+logs/
+node_modules/
+new/
+
+*.py
+!app/*.py
+!app/api/**/*.py
+

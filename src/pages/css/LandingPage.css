@@ -1,0 +1,308 @@
+/* General Layout */
+.container {
+  max-width: 900px;
+  padding: 20px;
+  margin: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Hero Section */
+.display-4 {
+  font-weight: 700;
+  color: #1f3a93;
+}
+
+.lead {
+  color: #555;
+}
+
+/* Section Headings */
+section h2 {
+  color: #ffffff;
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+/* Paragraphs & Lists */
+section p,
+section ol {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+ol li {
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(45deg, #1f3a93, #15366b);
+  border: none;
+  margin: 10px;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(31, 58, 147, 0.2);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, #15366b, #1f3a93);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(31, 58, 147, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 10px rgba(31, 58, 147, 0.2);
+}
+
+/* Footer */
+footer {
+  font-size: 0.9rem;
+  color: #888;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .display-4 {
+    font-size: 2rem;
+  }
+
+  .btn-lg {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+}
+
+/* Guide Steps */
+.guide-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+}
+
+.guide-steps > :nth-last-child(2),
+.guide-steps > :last-child {
+  grid-column: span 1;
+}
+
+.guide-step {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+  color: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.guide-step:hover {
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.icon-circle {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.guide-step:hover .icon-circle {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+.guide-icon {
+  font-size: 2rem;
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.guide-step:hover .guide-icon {
+  transform: scale(1.1);
+}
+
+.guide-step p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+
+/* Update responsive design for guide steps */
+@media (max-width: 1200px) {
+  .guide-steps {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 800px;
+  }
+}
+
+@media (max-width: 768px) {
+  .guide-steps {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: 400px;
+  }
+}
+
+.landing-container {
+  min-height: 100vh;
+  background: linear-gradient(45deg, #1f3a93, #15366b);
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.landing-content {
+  max-width: 1000px;
+  width: 100%;
+  padding: 2rem;
+}
+
+.hero-section {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: white;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+}
+
+.about-section {
+  margin-bottom: 3rem;
+  color: white;
+}
+
+.about-section p {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 20px;
+  margin: 1rem 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-card p {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: white;
+}
+
+.guide-section {
+  margin-bottom: 3rem;
+  color: white;
+}
+
+.cta-section {
+  text-align: center;
+  margin: 3rem 0;
+}
+
+.start-button {
+  background: white;
+  color: #1f3a93;
+  border: none;
+  padding: 1rem 3rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+.start-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.footer {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 3rem;
+  font-size: 0.9rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .landing-container {
+    padding: 1rem;
+  }
+
+  .landing-content {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+  }
+
+  .guide-steps {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .glass-card {
+    padding: 1.5rem;
+  }
+
+  .start-button {
+    width: 100%;
+    padding: 1rem;
+  }
+}

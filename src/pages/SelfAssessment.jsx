@@ -222,25 +222,20 @@ const CATEGORY_SCORE_MAP = {
 };
 
 const getTargetCategory = (topPredictionCondition) => {
-  // This function now returns the key used in CATEGORY_SCORE_MAP
-  if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('infectious')) {
+  if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('acne') || topPredictionCondition.toLowerCase().includes('dermatitis')) {
+    return 'INFLAMMATORY';
+  } else if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('molluscum contagiosum') || topPredictionCondition.toLowerCase().includes('ringworm') || topPredictionCondition.toLowerCase().includes('warts')) {
     return 'INFECTIOUS';
-  } else if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('autoimmune')) {
+  } else if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('vitiligo')) {
     return 'AUTOIMMUNE';
-  } else if (topPredictionCondition && (topPredictionCondition.toLowerCase().includes('benign') || topPredictionCondition.toLowerCase().includes('growth'))) {
-    return 'BENIGN_GROWTH';
   } else if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('cancer')) {
-    return 'SKIN_CANCER'; // Match the object name
+    return 'SKIN_CANCER';
   } else if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('pigmentary')) {
     return 'PIGMENTARY';
   } else if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('environmental')) {
     return 'ENVIRONMENTAL';
-  } else {
-    // Default to inflammatory for conditions like 'Acne', 'Psoriasis', etc.
-    return 'INFLAMMATORY';
-  }
+  } 
 };
-
 
 
 const calculateWeightedResults = (assessmentAnswers, topPredictionCondition) => {
@@ -268,15 +263,11 @@ const calculateWeightedResults = (assessmentAnswers, topPredictionCondition) => 
         const characteristicValue = attributes[attributeIndex] || 0;
 
         if (answerValue !== characteristicValue) {
-          // Penalize for mismatch
           totalWeight -= targetDiseaseAverages[diseaseName];
         } else {
-          // Reward for match
           if (answerValue === 0 && characteristicValue === 0) {
-            // Double negative: add the average
             totalWeight += targetDiseaseAverages[diseaseName];
           } else if (answerValue === 1 && characteristicValue === 1) {
-            // Positive match: add the specific weight
             totalWeight += weights[attributeIndex];
           }
         }
@@ -292,8 +283,8 @@ function SelfAssessment() {
   const [step, setStep] = useState(1);
   const [answers, setAnswers] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [showDebug, setShowDebug] = useState(false); // Add debug state
-  const [diseaseScores, setDiseaseScores] = useState({}); // Add disease scores state
+  const [showDebug, setShowDebug] = useState(false);
+  const [diseaseScores, setDiseaseScores] = useState({});
   const navigate = useNavigate();
   const location = useLocation();
   const capturedImage = location.state?.capturedImage;
@@ -358,7 +349,6 @@ const calculateAllDiseaseScores = (currentAnswers, topPredictionCondition) => {
   const allScores = {};
 
   Object.entries(targetCategoryDiseases).forEach(([diseaseName, diseaseData]) => {
-    // Add initial positive score to prevent negative values
     const INITIAL_SCORE = 5;
     let totalWeight = INITIAL_SCORE;
     const { weights, attributes } = diseaseData;
@@ -383,14 +373,13 @@ const calculateAllDiseaseScores = (currentAnswers, topPredictionCondition) => {
       }
     });
 
-    allScores[diseaseName] = Math.max(-10, totalWeight); // Ensure score doesn't go below 0
+    allScores[diseaseName] = Math.max(-10, totalWeight);
   });
 
   return allScores;
 };
 
 useEffect(() => {
-  // Get the top prediction from location state
   const topPrediction = predictions?.[0]?.condition || '';
   const scores = calculateAllDiseaseScores(answers, topPrediction);
   setDiseaseScores(scores);
@@ -432,8 +421,6 @@ useEffect(() => {
 
 const renderDebugPanel = () => {
     if (!showDebug) return null;
-
-    // Sort diseases by score (highest first)
     const sortedDiseases = Object.entries(diseaseScores)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10); // Show top 10 diseases
@@ -564,5 +551,5 @@ export {
   handleAnswer,
   calculateDiseaseAverages,
   calculateWeightedResults,
-  getTargetCategory // Add this export
+  getTargetCategory
 };

@@ -222,19 +222,24 @@ const CATEGORY_SCORE_MAP = {
 };
 
 const getTargetCategory = (topPredictionCondition) => {
-  if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('acne') || topPredictionCondition.toLowerCase().includes('dermatitis')) {
-    return 'INFLAMMATORY';
-  } else if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('molluscum contagiosum') || topPredictionCondition.toLowerCase().includes('ringworm') || topPredictionCondition.toLowerCase().includes('warts')) {
-    return 'INFECTIOUS';
-  } else if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('vitiligo')) {
-    return 'AUTOIMMUNE';
-  } else if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('cancer')) {
-    return 'SKIN_CANCER';
-  } else if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('pigmentary')) {
-    return 'PIGMENTARY';
-  } else if (topPredictionCondition && topPredictionCondition.toLowerCase().includes('environmental')) {
-    return 'ENVIRONMENTAL';
-  } 
+  if (!topPredictionCondition) return;
+
+  const condition = topPredictionCondition.toLowerCase();
+
+  const categories = {
+    INFLAMMATORY: ['acne', 'dermatitis'],
+    INFECTIOUS: ['molluscum contagiosum', 'ringworm', 'warts'],
+    AUTOIMMUNE: ['vitiligo'],
+    SKIN_CANCER: ['cancer'],
+    PIGMENTARY: ['pigmentary'],
+    ENVIRONMENTAL: ['environmental']
+  };
+
+  for (const [category, keywords] of Object.entries(categories)) {
+    if (keywords.some(keyword => condition.includes(keyword))) {
+      return category;
+    }
+  }
 };
 
 

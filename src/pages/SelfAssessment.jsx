@@ -185,19 +185,16 @@ const ASSESSMENT_MAPPING = {
   9: 8  // "Does it look smooth and shiny, or as if it's sitting on top of the skin like a sticker?" -> shiny_sticker attribute (index 8)
 };
 
-// Function to calculate average of an array
 const calculateArrayAverage = (arr) => {
   if (arr.length === 0) return 0;
   const sum = arr.reduce((total, val) => total + val, 0);
   return sum / arr.length;
 };
 
-// Function to get Yes/No answer value
 const getAnswerValue = (answer) => {
   return answer.toLowerCase().includes('yes') ? 1 : 0;
 };
 
-// Calculate average score for each disease IN A GIVEN CATEGORY OBJECT
 const calculateDiseaseAverages = (diseaseCategoryObject) => {
   if (!diseaseCategoryObject || typeof diseaseCategoryObject !== 'object') {
     return {};
@@ -212,7 +209,6 @@ const calculateDiseaseAverages = (diseaseCategoryObject) => {
   return DISEASE_AVERAGES;
 };
 
-// Master object mapping category names to their score objects
 const CATEGORY_SCORE_MAP = {
   'INFLAMMATORY': DISEASES.INFLAMMATORY,
   'INFECTIOUS': DISEASES.INFECTIOUS,
@@ -261,7 +257,6 @@ const calculateWeightedResults = (assessmentAnswers, topPredictionCondition) => 
   
   const targetDiseaseAverages = calculateDiseaseAverages(targetCategoryDiseases);
 
-  // Iterate over diseases in the target category
   Object.entries(targetCategoryDiseases).forEach(([diseaseName, diseaseData]) => {
     let totalWeight = 0;
     const { weights, attributes } = diseaseData;
@@ -398,8 +393,6 @@ const calculateAllDiseaseScores = (currentAnswers, topPredictionCondition) => {
 
 useEffect(() => {
   let topPrediction = '';
-  
-  // Handle different prediction structures
   if (predictions) {
     if (Array.isArray(predictions) && predictions.length > 0) {
       topPrediction = predictions[0]?.condition || '';
@@ -448,46 +441,6 @@ useEffect(() => {
     }, randomDelay * 1000);
   };
 
-const renderDebugPanel = () => {
-    if (!showDebug) return null;
-    const sortedDiseases = Object.entries(diseaseScores)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10); // Show top 10 diseases
-
-    return (
-      <div className="debug-panel">
-        <h3>
-          <button 
-            className="debug-close"
-            onClick={() => setShowDebug(false)}
-          >
-            ×
-          </button>
-        </h3>
-        
-        <div className="debug-scores">
-          {sortedDiseases.map(([disease, score]) => (
-            <div key={disease} className="debug-score-item">
-              <span className="disease-name">{disease.replace(/_/g, ' ')}</span>
-              <span className="score-value">{score.toFixed(2)}</span>
-              <div className="score-bar">
-                <div 
-                  className="score-fill" 
-                  style={{ width: `${Math.min(score * 20, 100)}%` }}
-                ></div>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        <div className="debug-answers">
-          <h4>Current Answers:</h4>
-          <pre>{JSON.stringify(answers, null, 2)}</pre>
-        </div>
-      </div>
-    );
-  };
-
   const currentQuestion = questions[step - 1];
   const isLastQuestion = step === questions.length;
 
@@ -515,17 +468,6 @@ const renderDebugPanel = () => {
           </div>
         </div>
       )}
-
-      {/* Add debug toggle button */}
-      <button 
-        className="debug-toggle"
-        onClick={() => setShowDebug(!showDebug)}
-      >
-        <p>debug</p>
-        <small>Top: {getTopPrediction()}</small>
-      </button>
-      
-      {renderDebugPanel()}
 
       <div className="assessment-card">
         {(!capturedImage || !predictions) && (

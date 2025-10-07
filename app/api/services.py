@@ -14,7 +14,7 @@ class PredictionService:
         self.logger = logging.getLogger(__name__)
         self.model = self._load_model(model_path)
         self.class_names = self._load_class_names(class_indices_path, labels_txt_path)
-        self.preprocess_mode = self._resolve_preprocess_mode(preprocess_mode, model_path)
+        self.preprocess_mode = 'efficientnet'
         self.signature_input_key = self._resolve_signature_input_key(self.model)
         try:
             self.logger.info(f"PredictionService initialized: preprocess={self.preprocess_mode}, signature_key={self.signature_input_key}")

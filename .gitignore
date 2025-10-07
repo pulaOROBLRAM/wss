@@ -4,5 +4,6 @@ new/
 checkpoints_enb0/
 
 *.py
+!run.py
 !app/*.py
 !app/api/**/*.py

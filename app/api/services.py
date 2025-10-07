@@ -7,9 +7,9 @@ import json
 import os
 
 class PredictionService:
-    def __init__(self, model_path='app/model/model.savedmodel', 
-                 class_indices_path='app/model/class_indices.json',
-                 labels_txt_path='app/model/labels.txt',
+    def __init__(self, model_path='saved_model/third', 
+                 class_indices_path='saved_model/third/class_indices.json',
+                 labels_txt_path='saved_model/third/labels.txt',
                  preprocess_mode: str = 'auto'):
         self.logger = logging.getLogger(__name__)
         self.model = self._load_model(model_path)
@@ -36,29 +36,77 @@ class PredictionService:
         return 'scale01'
     
     def _load_model(self, model_path):
+        # First try to load as a complete Keras model
         try:
             return tf.keras.models.load_model(model_path)
         except (ValueError, IOError) as e:
             self.logger.warning(f"Keras load failed: {e}")
+        
+        # Try to load from custom format (architecture + weights)
+        try:
+            # Check for model_architecture.json and model_weights.h5
+            arch_path = os.path.join(model_path, 'model_architecture.json')
+            weights_path = os.path.join(model_path, 'model_weights.h5')
             
-            if os.path.exists(os.path.join(model_path, 'config.json')):
-                try:
-                    with open(os.path.join(model_path, 'config.json')) as f:
-                        config = json.load(f)
-                    model = tf.keras.models.model_from_config(config)
-                    model.load_weights(os.path.join(model_path, 'weights.h5'))
-                    return model
-                except Exception as e:
-                    self.logger.warning(f"Config load failed: {e}")
-            
+            if os.path.exists(arch_path) and os.path.exists(weights_path):
+                return self._load_custom_model(arch_path, weights_path)
+        except Exception as e:
+            self.logger.warning(f"Custom model load failed: {e}")
+        
+        # Try to load from config.json format
+        if os.path.exists(os.path.join(model_path, 'config.json')):
             try:
-                loaded = tf.saved_model.load(model_path)
-                if 'serving_default' in loaded.signatures:
-                    return loaded.signatures['serving_default']
-                raise ValueError("No serving signature found")
+                with open(os.path.join(model_path, 'config.json')) as f:
+                    config = json.load(f)
+                model = tf.keras.models.model_from_config(config)
+                model.load_weights(os.path.join(model_path, 'weights.h5'))
+                return model
             except Exception as e:
-                self.logger.error(f"All load attempts failed: {e}")
-                raise RuntimeError("Could not load model with any method")
+                self.logger.warning(f"Config load failed: {e}")
+        
+        # Try SavedModel format
+        try:
+            loaded = tf.saved_model.load(model_path)
+            if 'serving_default' in loaded.signatures:
+                return loaded.signatures['serving_default']
+            raise ValueError("No serving signature found")
+        except Exception as e:
+            self.logger.error(f"All load attempts failed: {e}")
+            raise RuntimeError("Could not load model with any method")
+    
+    def _load_custom_model(self, arch_path, weights_path):
+        """Load model from custom architecture and weights files"""
+        from tensorflow.keras.applications import EfficientNetB0
+        from tensorflow.keras import layers, models
+        
+        with open(arch_path, 'r') as f:
+            arch_info = json.load(f)
+        
+        base_model = EfficientNetB0(
+            weights='imagenet',
+            include_top=False,
+            input_shape=tuple(arch_info['input_shape'])
+        )
+        base_model.trainable = arch_info['base_trainable']
+        
+        model = models.Sequential([
+            base_model,
+            layers.GlobalAveragePooling2D(),
+            layers.Dropout(arch_info['dropout_rate']),
+            layers.Dense(arch_info['dense_units'], activation='relu'),
+            layers.Dropout(arch_info['dropout_rate']),
+            layers.Dense(arch_info['num_classes'], activation='softmax')
+        ])
+        
+        model.load_weights(weights_path)
+        
+        model.compile(
+            optimizer='adam',
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
+        
+        return model
 
     def _extract_probs(self, raw_output):
         if isinstance(raw_output, np.ndarray):

@@ -430,10 +430,6 @@ function ResultsPage() {
                 : 'Regular monitoring recommended'}
             </div>
             
-            <div className='disease-category'>
-              <p className='category-name'>{/* topPrediction.condition*/}(Inflammatory Diseases - Static)</p>
-            </div>
-            
             {diseaseCategory().map(([disease, value], index) => {
               const key = disease.replace(/_/g, ' ');
               const info = CONDITION_DESCRIPTIONS[key];

@@ -1,8 +1,8 @@
 logs/
 node_modules/
 new/
+checkpoints_enb0/
 
 *.py
 !app/*.py
 !app/api/**/*.py
-

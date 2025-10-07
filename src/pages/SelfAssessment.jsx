@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCamera, faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './css/SelfAssessment.css';
 
@@ -56,10 +56,6 @@ const DISEASES = {
     "Ipetigo": {
       attributes: [1, 1, 0, 1, 1, 1, 1, 1, 0],
       weights: [0.3, 0.4, 0, 0.3, 0.7, 0.6, 0.3, 0.2, 0]
-    },
-    "Skin_Infections": {
-      attributes: [1, 1, 0, 1, 1, 1, 1, 1, 0],
-      weights: [0.4, 0.7, 0, 0.4, 0.6, 0.3, 0.3, 0.5, 0]
     },
     "Cold_Sores": {
       attributes: [1, 1, 0, 1, 1, 1, 1, 1, 0],
@@ -203,9 +199,15 @@ const getAnswerValue = (answer) => {
 
 // Calculate average score for each disease IN A GIVEN CATEGORY OBJECT
 const calculateDiseaseAverages = (diseaseCategoryObject) => {
+  if (!diseaseCategoryObject || typeof diseaseCategoryObject !== 'object') {
+    return {};
+  }
+  
   const DISEASE_AVERAGES = {};
   for (const [disease, data] of Object.entries(diseaseCategoryObject)) {
-    DISEASE_AVERAGES[disease] = calculateArrayAverage(data.weights);
+    if (data && data.weights && Array.isArray(data.weights)) {
+      DISEASE_AVERAGES[disease] = calculateArrayAverage(data.weights);
+    }
   }
   return DISEASE_AVERAGES;
 };
@@ -252,6 +254,11 @@ const calculateWeightedResults = (assessmentAnswers, topPredictionCondition) => 
 
   const targetCategoryKey = getTargetCategory(topPredictionCondition);
   const targetCategoryDiseases = CATEGORY_SCORE_MAP[targetCategoryKey];
+  
+  if (!targetCategoryDiseases) {
+    return results;
+  }
+  
   const targetDiseaseAverages = calculateDiseaseAverages(targetCategoryDiseases);
 
   // Iterate over diseases in the target category
@@ -350,6 +357,11 @@ const calculateAllDiseaseScores = (currentAnswers, topPredictionCondition) => {
 
   const targetCategoryKey = getTargetCategory(topPredictionCondition);
   const targetCategoryDiseases = CATEGORY_SCORE_MAP[targetCategoryKey];
+  
+  if (!targetCategoryDiseases) {
+    return {};
+  }
+  
   const targetDiseaseAverages = calculateDiseaseAverages(targetCategoryDiseases);
   const allScores = {};
 
@@ -385,7 +397,19 @@ const calculateAllDiseaseScores = (currentAnswers, topPredictionCondition) => {
 };
 
 useEffect(() => {
-  const topPrediction = predictions?.[0]?.condition || '';
+  let topPrediction = '';
+  
+  // Handle different prediction structures
+  if (predictions) {
+    if (Array.isArray(predictions) && predictions.length > 0) {
+      topPrediction = predictions[0]?.condition || '';
+    } else if (predictions.top_prediction) {
+      topPrediction = predictions.top_prediction;
+    } else if (typeof predictions === 'string') {
+      topPrediction = predictions;
+    }
+  }
+  
   const scores = calculateAllDiseaseScores(answers, topPrediction);
   setDiseaseScores(scores);
 }, [answers, predictions]);
@@ -467,6 +491,20 @@ const renderDebugPanel = () => {
   const currentQuestion = questions[step - 1];
   const isLastQuestion = step === questions.length;
 
+  // Extract top prediction for debug button
+  const getTopPrediction = () => {
+    if (!predictions) return 'No prediction';
+    
+    if (Array.isArray(predictions) && predictions.length > 0) {
+      return predictions[0]?.condition || 'Unknown condition';
+    } else if (predictions.top_prediction) {
+      return predictions.top_prediction;
+    } else if (typeof predictions === 'string') {
+      return predictions;
+    }
+    return 'No prediction';
+  };
+
   return (
     <div className="assessment-container">
       {isLoading && (
@@ -484,6 +522,7 @@ const renderDebugPanel = () => {
         onClick={() => setShowDebug(!showDebug)}
       >
         <p>debug</p>
+        <small>Top: {getTopPrediction()}</small>
       </button>
       
       {renderDebugPanel()}

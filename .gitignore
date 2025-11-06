@@ -2,6 +2,7 @@ logs/
 node_modules/
 new/
 checkpoints_enb0/
+back/
 
 *.py
 !run.py

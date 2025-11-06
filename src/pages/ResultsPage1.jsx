@@ -19,7 +19,8 @@ import {
 
 import {
   CONDITION_DESCRIPTIONS
-} from './SelfAssessment';
+} from './MedicalConditions';
+
 
 function ResultsPage() {
   const navigate = useNavigate();
@@ -27,6 +28,8 @@ function ResultsPage() {
   const predictions = location.state?.predictions;
   const capturedImage = location.state?.capturedImage;
   const assessmentData = location.state?.answers;
+  const diseaseScores = location.state?.diseaseScores;
+  const isAdaptive = location.state?.adaptive || false;
 
   const assessmentQuestions = [
     { id: 1, text: "Does it feel itchy?" },
@@ -139,8 +142,22 @@ function ResultsPage() {
 
   const diseaseCategory = () => {
     const category = getTargetCategory(topPrediction.condition);
-    const weightedCategories = calculateWeightedResults(assessmentData, topPrediction.condition);
-    const categoryData = weightedCategories[category] || {};
+    
+    let categoryData = {};
+    
+    if (isAdaptive && diseaseScores && Object.keys(diseaseScores).length > 0) {
+      // Use pre-calculated disease scores from adaptive questionnaire
+      categoryData = diseaseScores;
+    } else if (assessmentData) {
+      // Calculate scores using regular assessment method
+      const weightedCategories = calculateWeightedResults(assessmentData, topPrediction.condition);
+      categoryData = weightedCategories[category] || {};
+    }
+
+    // If no category data, return empty array
+    if (Object.keys(categoryData).length === 0) {
+      return [];
+    }
 
     // take top 4
     const top4 = Object.entries(categoryData)
@@ -150,12 +167,22 @@ function ResultsPage() {
     // sum only the top 4 scores
     const total = top4.reduce((sum, [, score]) => sum + score, 0);
 
-    // normalize top 4 to 100%
-    return top4.map(([disease, score]) => {
-      const percentage = total > 0 ? (score / total) * 100 : 0;
+    // normalize top 4 to sum to 100%
+    const filteredTop4 = top4.filter(([, score]) => score > 0);
+    const filteredTotal = filteredTop4.reduce((sum, [, score]) => sum + score, 0);
+    
+    // If no positive scores, return empty array
+    if (filteredTop4.length === 0) {
+      return [];
+    }
+    
+    return filteredTop4.map(([disease, score]) => {
+      const percentage = filteredTotal > 0 ? (score / filteredTotal) * 100 : 0;
       return [disease, Number(percentage.toFixed(1))];
     });
   };
+
+  const diseaseResults = diseaseCategory();
 
   return (
     <div className="results-container">
@@ -178,21 +205,31 @@ function ResultsPage() {
                 : 'Regular monitoring recommended'}
             </div>
             
-            {diseaseCategory().map(([disease, value], index) => {
-              const key = disease.replace(/_/g, ' ');
-              const info = CONDITION_DESCRIPTIONS[key];
+            {diseaseResults.length > 0 ? (
+              diseaseResults.map(([disease, value], index) => {
+                const key = disease.replace(/_/g, ' ');
+                const info = CONDITION_DESCRIPTIONS[key];
 
-              return (
-                <div key={index} className="condition-card">
-                  <h3 className='section-title'>{info?.name || key}</h3>
-                  <p className='description'>{info?.description || "No description available."}</p>
-                  <p className='condition-probability'>
-                    Weighted Probability: {value}%
-                  </p>
-                  <p className='severity'>Severity: {info?.severity || "Unknown"}</p>
-                </div>
-              );
-            })}
+                return (
+                  <div key={index} className="condition-card">
+                    <h3 className='section-title'>{info?.name || key}</h3>
+                    <p className='description'>{info?.description || "No description available."}</p>
+                    <p className='condition-probability'>
+                      Probability: {value}%
+                    </p>
+                    <p className='severity'>Severity: {info?.severity || "Unknown"}</p>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="condition-card">
+                <p className='description'>
+                  {isAdaptive 
+                    ? "Insufficient data for weighted assessment. Please answer more questions for better results."
+                    : "Assessment data not available. Disease probabilities are based on image analysis only."}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* RIGHT - Assessment Answers, Recommendations & Image */}
@@ -227,24 +264,58 @@ function ResultsPage() {
             {/* Self-Assessment Answers Section */}
             {assessmentData && Object.keys(assessmentData).length > 0 && (
               <div className="result-section">
-                <h2 className="section-title"><FaClipboardList /> Self-Assessment Answers</h2>
+                <h2 className="section-title">
+                  <FaClipboardList /> Self-Assessment Answers
+                  {isAdaptive && (
+                    <span style={{ fontSize: '0.8em', marginLeft: '10px', color: '#4CAF50', fontWeight: 'normal' }}>
+                      (Adaptive Assessment)
+                    </span>
+                  )}
+                </h2>
                 <div className="assessment-answers-list">
-                  {assessmentQuestions.map((question) => (
-                    <div key={question.id} className="assessment-answer-item">
-                      <div className="assessment-question">
-                        <FaUser className="assessment-icon" />
-                        <span className="question-text">{question.text}</span>
+                  {isAdaptive ? (
+                    // Show only answered questions for adaptive assessment
+                    assessmentQuestions
+                      .filter(question => assessmentData[question.id])
+                      .map((question) => (
+                        <div key={question.id} className="assessment-answer-item">
+                          <div className="assessment-question">
+                            <FaUser className="assessment-icon" />
+                            <span className="question-text">{question.text}</span>
+                          </div>
+                          <div className="assessment-answer">
+                            {assessmentData[question.id]}
+                          </div>
+                        </div>
+                      ))
+                  ) : (
+                    // Show all questions for regular assessment
+                    assessmentQuestions.map((question) => (
+                      <div key={question.id} className="assessment-answer-item">
+                        <div className="assessment-question">
+                          <FaUser className="assessment-icon" />
+                          <span className="question-text">{question.text}</span>
+                        </div>
+                        <div className="assessment-answer">
+                          {assessmentData[question.id] || 'Not answered'}
+                        </div>
                       </div>
-                      <div className="assessment-answer">
-                        {assessmentData[question.id] || 'Not answered'}
-                      </div>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
                 <div className="weighting-info">
                   <p className="weighting-note">
                     <FaCheckCircle className="info-icon" />
-                    These answers are used to weight the diagnostic results for more accurate predictions.
+                    {isAdaptive ? (
+                      <>
+                        Adaptive assessment: {Object.keys(assessmentData).length} of {assessmentQuestions.length} questions answered.
+                        These answers are used to weight the diagnostic results for more accurate predictions.
+                      </>
+                    ) : (
+                      <>
+                        These answers are used to weight the diagnostic results for more accurate predictions.
+                      </>
+                    )}
                   </p>
                 </div>
               </div>

@@ -9,7 +9,6 @@ function ReviewPage() {
   const [assessmentData, setAssessmentData] = useState(null);
   const [imageData, setImageData] = useState(null);
 
-  // Questions from self-assessment
   const questions = [
     {
       id: 1,
@@ -34,13 +33,12 @@ function ReviewPage() {
   ];
 
   useEffect(() => {
-    // Load assessment answers from localStorage
     const savedAnswers = localStorage.getItem('assessmentAnswers');
     if (savedAnswers) {
       setAssessmentData(JSON.parse(savedAnswers));
     }
 
-    // Get image from location state (from camera or upload)
+
     if (location.state?.capturedImage) {
       setImageData(location.state.capturedImage);
     }
@@ -57,11 +55,9 @@ function ReviewPage() {
     
     if (assessmentData && imageData) {
       console.log('Preparing to navigate to results page');
-      // Convert assessment data to array format for results page
       const assessmentArray = Object.values(assessmentData);
       console.log('Assessment Array:', assessmentArray);
       
-      // Navigate to results page with both assessment and image data
       navigate('/results', {
         state: {
           assessmentData: assessmentArray,
@@ -70,7 +66,6 @@ function ReviewPage() {
         }
       });
       
-      // Clear the stored assessment data since we're done with it
       localStorage.removeItem('assessmentAnswers');
     } else {
       console.log('Missing required data:', {

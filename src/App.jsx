@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import UploadPage from './pages/UploadPage';
 import SelfAssessment from './pages/SelfAssessment';
+import AdaptiveQuestionnaire from './pages/AdaptiveQuestionnaire';
 import CameraPage from './pages/CameraPage';
 import ReviewPage from './pages/ReviewPage';
 import ResultsPage from './pages/ResultsPage';
@@ -20,6 +21,7 @@ function App() {
           <Route path="/camera" element={<CameraPage />} />
           <Route path="/review" element={<ReviewPage />} />
           <Route path="/results" element={<ResultsPage1 />} />
+          <Route path="/questions" element={<selfAssessmentQuestions />} />
         </Routes>
       </div>
     </Router>

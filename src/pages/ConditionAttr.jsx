@@ -7,7 +7,7 @@ const DISEASES = {
     },
     "Acne_Keloidalis_Nuchae": {
       attributes: [1, 1, 1, 1, 0, 0],
-      weights: [2.8, 1.2, 3.8, 4.2, 2.0, 2.0]
+      weights: [2.8, 1.2, 3.8,  4.2, 2.0, 2.0]
     },  
     "Atopic_Dermatitis": {
       attributes: [0, 1, 1, 1, 1, 1],
@@ -41,7 +41,7 @@ const DISEASES = {
       weights: [2.0, 2.0, 2.0, 2.0, 4.2, 3.7] 
     },
     "Impetigo": {
-      attributes: [0, 1, 1, 0, 0, 1],
+      attributes: [0, 1, 1,  0, 0, 1],
       weights: [2.0, 3.7, 5.2, 2.0, 2.0, 2.7] 
     },
     "Cold_Sores": {
@@ -64,8 +64,8 @@ const DISEASES = {
       weights: [3.5, 2.0, 2.0, 1.2, 2.0, 2.0] 
     },
     "Lupus": {
-      attributes: [0, 1, 1, 1, 1, 1],
-      weights: [2.0, 2.0, 2.5, 1.8, 1.5, 2.2]  
+      attributes: [0, 1, 1, 0, 1, 1],
+      weights: [1.5, 3.5, 3.2, 1.5, 2.8, 2.5]  
     },
     "Drug_Induced_Pigmentation": {
       attributes: [0, 0, 1, 1, 1, 0],

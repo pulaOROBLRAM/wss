@@ -62,8 +62,8 @@ const CATEGORY_SCORE_MAP = {
 // Category-specific thresholds
 const CATEGORY_THRESHOLDS = {
   'INFLAMMATORY': 45,
-  'INFECTIOUS': 45,
-  'AUTOIMMUNE': 50,
+  'INFECTIOUS': 40,
+  'AUTOIMMUNE': 45,
   'BENIGN_GROWTH': 40,
   'PIGMENTARY': 38,
   'SKIN_CANCER': 60, // Higher threshold for cancer-related conditions

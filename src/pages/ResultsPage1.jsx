@@ -260,66 +260,6 @@ function ResultsPage() {
                 <img src={capturedImage} alt="Analyzed skin condition" />
               </div>
             </div>
-            
-            {/* Self-Assessment Answers Section */}
-            {assessmentData && Object.keys(assessmentData).length > 0 && (
-              <div className="result-section">
-                <h2 className="section-title">
-                  <FaClipboardList /> Self-Assessment Answers
-                  {isAdaptive && (
-                    <span style={{ fontSize: '0.8em', marginLeft: '10px', color: '#4CAF50', fontWeight: 'normal' }}>
-                      (Adaptive Assessment)
-                    </span>
-                  )}
-                </h2>
-                <div className="assessment-answers-list">
-                  {isAdaptive ? (
-                    // Show only answered questions for adaptive assessment
-                    assessmentQuestions
-                      .filter(question => assessmentData[question.id])
-                      .map((question) => (
-                        <div key={question.id} className="assessment-answer-item">
-                          <div className="assessment-question">
-                            <FaUser className="assessment-icon" />
-                            <span className="question-text">{question.text}</span>
-                          </div>
-                          <div className="assessment-answer">
-                            {assessmentData[question.id]}
-                          </div>
-                        </div>
-                      ))
-                  ) : (
-                    // Show all questions for regular assessment
-                    assessmentQuestions.map((question) => (
-                      <div key={question.id} className="assessment-answer-item">
-                        <div className="assessment-question">
-                          <FaUser className="assessment-icon" />
-                          <span className="question-text">{question.text}</span>
-                        </div>
-                        <div className="assessment-answer">
-                          {assessmentData[question.id] || 'Not answered'}
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-                <div className="weighting-info">
-                  <p className="weighting-note">
-                    <FaCheckCircle className="info-icon" />
-                    {isAdaptive ? (
-                      <>
-                        Adaptive assessment: {Object.keys(assessmentData).length} of {assessmentQuestions.length} questions answered.
-                        These answers are used to weight the diagnostic results for more accurate predictions.
-                      </>
-                    ) : (
-                      <>
-                        These answers are used to weight the diagnostic results for more accurate predictions.
-                      </>
-                    )}
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
 

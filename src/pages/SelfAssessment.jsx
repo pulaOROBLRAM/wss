@@ -59,14 +59,13 @@ const CATEGORY_SCORE_MAP = {
   'ENVIRONMENTAL': DISEASES.ENVIRONMENTAL,
 };
 
-// Category-specific thresholds
 const CATEGORY_THRESHOLDS = {
   'INFLAMMATORY': 45,
-  'INFECTIOUS': 40,
+  'INFECTIOUS': 35,
   'AUTOIMMUNE': 45,
   'BENIGN_GROWTH': 40,
   'PIGMENTARY': 38,
-  'SKIN_CANCER': 60, // Higher threshold for cancer-related conditions
+  'SKIN_CANCER': 60,
   'ENVIRONMENTAL': 30,
   'DEFAULT': 40
 };
@@ -110,8 +109,10 @@ const calculateWeightedResults = (assessmentAnswers, topPredictionCondition) => 
         }
       }
     });
+    
     results[diseaseName] = Math.max(-10, totalWeight);
   });
+  
   return { [targetCategoryKey]: results };
 };
 
@@ -371,9 +372,9 @@ const getTargetCategory = (topPredictionCondition) => {
   const condition = topPredictionCondition.toLowerCase();
 
   const categories = {
-    INFLAMMATORY: ['acne', 'dermatitis', 'psoriasis'],
-    INFECTIOUS: ['molluscum contagiosum', 'ringworm', 'warts', 'boils', 'cellulitis', 'folliculitis', 'impetigo'],
-    AUTOIMMUNE: ['vitiligo', 'lupus'],
+    INFLAMMATORY: ['acne', 'dermatitis'],
+    INFECTIOUS: ['molluscum contagiosum', 'ringworm', 'warts'],
+    AUTOIMMUNE: ['vitiligo'],
     SKIN_CANCER: ['cancer', 'melanoma', 'carcinoma', 'keratosis'],
     PIGMENTARY: ['pigmentary', 'melasma', 'hyperpigmentation', 'age spots'],
     ENVIRONMENTAL: ['environmental', 'poison ivy', 'razor bumps', 'dry skin', 'sun damage']

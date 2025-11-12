@@ -34,7 +34,7 @@ const DISEASES = {
     },
     "Cellulitis": {
       attributes: [0, 1, 0, 0, 1, 0],
-      weights: [2.0, 8.0, 2.0, 2.0, 7.5, 2.0] 
+      weights: [2.0, 5.0, 2.0, 2.0, 7.5, 2.0] 
     },
     "Folliculitis": {
       attributes: [0, 0, 0, 0, 1, 1],
@@ -67,7 +67,7 @@ const DISEASES = {
       attributes: [0, 1, 1, 0, 1, 1],
       weights: [1.5, 3.5, 3.2, 1.5, 2.8, 2.5]  
     },
-    "Drug_Induced_Pigmentation": {
+    "Drug_Induced_Pigmentation": {  
       attributes: [0, 0, 1, 1, 1, 0],
       weights: [2.0, 2.0, 2.8, 2.5, 1.2, 2.0] 
     },

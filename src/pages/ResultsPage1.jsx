@@ -6,9 +6,7 @@ import {
   FaHome,
   FaCheckCircle,
   FaExclamationTriangle,
-  FaBandAid,
-  FaClipboardList,
-  FaUser
+  FaBandAid
 } from 'react-icons/fa';
 import './css/ResultsPage.css';
 
@@ -21,6 +19,16 @@ import {
   CONDITION_DESCRIPTIONS
 } from './MedicalConditions';
 
+const DISPLAY_THRESHOLDS = {
+  'INFLAMMATORY': 25,
+  'INFECTIOUS': 20,
+  'AUTOIMMUNE': 30,
+  'BENIGN_GROWTH': 15,
+  'PIGMENTARY': 25,
+  'SKIN_CANCER': 10,
+  'ENVIRONMENTAL': 20,
+  'DEFAULT': 25
+};
 
 function ResultsPage() {
   const navigate = useNavigate();
@@ -30,18 +38,6 @@ function ResultsPage() {
   const assessmentData = location.state?.answers;
   const diseaseScores = location.state?.diseaseScores;
   const isAdaptive = location.state?.adaptive || false;
-
-  const assessmentQuestions = [
-    { id: 1, text: "Does it feel itchy?" },
-    { id: 2, text: "Does it hurt or feel sore when you touch it?" },
-    { id: 3, text: "Does it look like a ring or circle on the skin?" },
-    { id: 4, text: "Have you noticed the spot getting darker, bigger, or changing shape?" },
-    { id: 5, text: "Do you see small blisters filled with clear fluid?" },
-    { id: 6, text: "Does the skin feel rough, scaly, or flaky?" },
-    { id: 7, text: "Does the spot look uneven in shape or have more than one color?" },
-    { id: 8, text: "Does it look like a small bump that sticks up from the skin?" },
-    { id: 9, text: "Does it look smooth and shiny, or as if it's sitting on top of the skin like a sticker?" }
-  ];
 
   if (!predictions || !capturedImage) {
     return (
@@ -70,25 +66,14 @@ function ResultsPage() {
         description: desc.description,
         description1: desc.description1,
         treatment: desc.treatment || "Unknown",
-        recommendations: desc.recommendations || []
+        recommendations: desc.recommendations || [],
+        severity: desc.severity || "Unknown"
       };
     })
     .sort((a, b) => b.probability - a.probability)
     .slice(0, 1);
 
-  const totalProb = sortedPredictionsRaw.reduce((sum, pred) => sum + pred.probability, 0);
-  const sortedPredictions = totalProb > 0
-    ? sortedPredictionsRaw.map(pred => ({
-      ...pred,
-      originalProbability: pred.probability,
-      probability: pred.probability / totalProb
-    }))
-    : sortedPredictionsRaw.map(pred => ({
-      ...pred,
-      originalProbability: pred.probability
-    }));
-
-  const topPrediction = sortedPredictions[0];
+  const topPrediction = sortedPredictionsRaw[0];
   const urgencyLevel =
     topPrediction.probability > 0.7 && (topPrediction.condition === 'MEL' || topPrediction.condition === 'SCC')
       ? 'high'
@@ -108,23 +93,17 @@ function ResultsPage() {
             .urgency.high { color: red; }
             .urgency.moderate { color: orange; }
             .urgency.low { color: green; }
+            .note { font-style: italic; color: #666; margin-top: 10px; }
           </style>
         </head>
         <body>
-          <h1>Skin Condition Analysis Report</h1>
+          <h1>Skin Analysis Report</h1>
           <p>Generated: ${new Date().toLocaleString()}</p>
           <img src="${capturedImage}" alt="Skin" width="300"/>
           <div class="urgency ${urgencyLevel}">Urgency: ${urgencyLevel.toUpperCase()}</div>
-          ${sortedPredictions.map(pred => `
-            <div class="condition">
-              <h2>${pred.name} (${(pred.probability * 100).toFixed(1)}%)</h2>
-              <p><strong>Severity:</strong> ${pred.severity}</p>
-              <p>${pred.description}</p>
-              <p>${pred.description1}</p>
-              <h4>Recommendations:</h4>
-              <ul>${pred.recommendations.map(rec => `<li>${rec}</li>`).join('')}</ul>
-            </div>
-          `).join('')}
+          <div class="note">
+            Note: Conditions are filtered by category-specific display thresholds.
+          </div>
         </body>
       </html>
     `;
@@ -140,49 +119,71 @@ function ResultsPage() {
     window.URL.revokeObjectURL(url);
   };
 
-  const diseaseCategory = () => {
-    const category = getTargetCategory(topPrediction.condition);
-    
-    let categoryData = {};
+  const getAllCategoriesResults = () => {
+    const results = [];
     
     if (isAdaptive && diseaseScores && Object.keys(diseaseScores).length > 0) {
-      // Use pre-calculated disease scores from adaptive questionnaire
-      categoryData = diseaseScores;
+      const targetCategory = getTargetCategory(topPrediction.condition);
+      const categoryData = diseaseScores;
+      const categoryThreshold = DISPLAY_THRESHOLDS[targetCategory] || DISPLAY_THRESHOLDS.DEFAULT;
+      
+      if (Object.keys(categoryData).length > 0) {
+        const top4 = Object.entries(categoryData)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 4);
+
+        const totalScore = top4.reduce((sum, [, score]) => sum + score, 0);
+        
+        const normalizedResults = top4
+          .map(([disease, score]) => {
+            const percentage = totalScore > 0 ? (score / totalScore) * 100 : 0;
+            return {
+              disease,
+              percentage: Number(percentage.toFixed(1)),
+              category: targetCategory,
+              threshold: categoryThreshold
+            };
+          })
+          .filter(result => result.percentage >= categoryThreshold);
+
+        results.push(...normalizedResults);
+      }
     } else if (assessmentData) {
-      // Calculate scores using regular assessment method
-      const weightedCategories = calculateWeightedResults(assessmentData, topPrediction.condition);
-      categoryData = weightedCategories[category] || {};
+      const categories = ['INFLAMMATORY', 'INFECTIOUS', 'AUTOIMMUNE', 'BENIGN_GROWTH', 'PIGMENTARY', 'SKIN_CANCER', 'ENVIRONMENTAL'];
+      
+      categories.forEach(category => {
+        const weightedCategories = calculateWeightedResults(assessmentData, topPrediction.condition);
+        const categoryData = weightedCategories[category];
+        const categoryThreshold = DISPLAY_THRESHOLDS[category] || DISPLAY_THRESHOLDS.DEFAULT;
+        
+        if (categoryData && Object.keys(categoryData).length > 0) {
+          const top4 = Object.entries(categoryData)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 4);
+
+          const totalScore = top4.reduce((sum, [, score]) => sum + score, 0);
+          
+          const normalizedResults = top4
+            .map(([disease, score]) => {
+              const percentage = totalScore > 0 ? (score / totalScore) * 100 : 0;
+              return {
+                disease,
+                percentage: Number(percentage.toFixed(1)),
+                category: category,
+                threshold: categoryThreshold
+              };
+            })
+            .filter(result => result.percentage >= categoryThreshold);
+
+          results.push(...normalizedResults);
+        }
+      });
     }
 
-    // If no category data, return empty array
-    if (Object.keys(categoryData).length === 0) {
-      return [];
-    }
-
-    // take top 4
-    const top4 = Object.entries(categoryData)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 4);
-
-    // sum only the top 4 scores
-    const total = top4.reduce((sum, [, score]) => sum + score, 0);
-
-    // normalize top 4 to sum to 100%
-    const filteredTop4 = top4.filter(([, score]) => score > 0);
-    const filteredTotal = filteredTop4.reduce((sum, [, score]) => sum + score, 0);
-    
-    // If no positive scores, return empty array
-    if (filteredTop4.length === 0) {
-      return [];
-    }
-    
-    return filteredTop4.map(([disease, score]) => {
-      const percentage = filteredTotal > 0 ? (score / filteredTotal) * 100 : 0;
-      return [disease, Number(percentage.toFixed(1))];
-    });
+    return results.sort((a, b) => b.percentage - a.percentage);
   };
 
-  const diseaseResults = diseaseCategory();
+  const allDiseaseResults = getAllCategoriesResults();
 
   return (
     <div className="results-container">
@@ -205,34 +206,42 @@ function ResultsPage() {
                 : 'Regular monitoring recommended'}
             </div>
             
-            {diseaseResults.length > 0 ? (
-              diseaseResults.map(([disease, value], index) => {
-                const key = disease.replace(/_/g, ' ');
-                const info = CONDITION_DESCRIPTIONS[key];
+            {allDiseaseResults.length > 0 ? (
+              <>
+                {allDiseaseResults.map((result, index) => {
+                  const key = result.disease.replace(/_/g, ' ');
+                  const info = CONDITION_DESCRIPTIONS[key];
 
-                return (
-                  <div key={index} className="condition-card">
-                    <h3 className='section-title'>{info?.name || key}</h3>
-                    <p className='description'>{info?.description || "No description available."}</p>
-                    <p className='condition-probability'>
-                      Probability: {value}%
-                    </p>
-                    <p className='severity'>Severity: {info?.severity || "Unknown"}</p>
-                  </div>
-                );
-              })
+                  return (
+                    <div key={index} className="condition-card">
+                      <div className="condition-header">
+                        <h3 className='section-title'>{info?.name || key}</h3>
+                      </div>
+                      <p className='description'>{info?.description || "No description available."}</p>
+                      <p className='condition-probability'>
+                        Probability: {result.percentage}%
+                      </p>
+                      <p className='severity'>Severity: {info?.severity || "Unknown"}</p>
+                    </div>
+                    
+                  );
+                })}
+              </>
             ) : (
               <div className="condition-card">
+                <h3 className='section-title'>No High-Probability Conditions Detected</h3>
                 <p className='description'>
-                  {isAdaptive 
-                    ? "Insufficient data for weighted assessment. Please answer more questions for better results."
-                    : "Assessment data not available. Disease probabilities are based on image analysis only."}
+                  No skin conditions met the category-specific display thresholds. 
+                  This could indicate a benign condition or that further professional evaluation is needed.
+                </p>
+                <p className='condition-probability'>
+                  Top detected condition: {topPrediction.name} ({(topPrediction.probability * 100).toFixed(1)}%)
                 </p>
               </div>
             )}
           </div>
 
-          {/* RIGHT - Assessment Answers, Recommendations & Image */}
+          {/* RIGHT - Recommendations & Image */}
           <div className="right-column">
             <div className="result-section">
               <h2 className="section-title"><FaListUl /> Recommendations</h2>
@@ -276,4 +285,4 @@ function ResultsPage() {
   );
 }
 
-export default ResultsPage
+export default ResultsPage;

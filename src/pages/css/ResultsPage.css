@@ -137,7 +137,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.5rem;
 }
 
 .condition-name {
@@ -339,6 +339,15 @@
     font-weight: bold;
     font-size: 19px;
     margin-top: 16px;
+}
+
+.category-badge {
+  background: #4a5568;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .results-actions {

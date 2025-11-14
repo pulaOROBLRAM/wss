@@ -5,7 +5,7 @@ const CONDITION_DESCRIPTIONS = {
     causes: "Acne develops when pores clog with oil, dead skin cells, and bacteria, causing inflammation. Whiteheads occur when pores are fully blocked, while blackheads form when clogged pores remain open and darken on exposure to air. Excess oil and inflammation can lead to deeper cysts and nodules. Causes include hormonal, genetic, and environmental factors. Androgens, which rise during puberty, menstruation, and pregnancy, increase oil production. Family history, comedogenic products, certain medications, diet, and stress can also trigger acne.",
 
   },
-  "Acne Kleoidalis Nuchae": {
+  "Acne Keloidalis Nuchae": {
     name: "Acne Kleoidalis Nuchae",
     description: "Acne keloidalis nuchae (AKN), or keloidal folliculitis, is a chronic skin condition causing acne-like bumps on the scalp and neck. It starts with inflamed, pus-filled follicles that form small scars, which can grow into thick keloids leading to permanent hair loss. Tufted “doll hairs” may appear, with itching and pain common, though cosmetic disfigurement most affects quality of life.",
     treatment: "AKN is a chronic condition with periodic inflammatory flares. Treatment focuses on controlling inflammation and requires ongoing maintenance and adjustment during flares. Behavioral counseling helps patients avoid triggers. Inflammation can improve with treatment, but keloidal scarring remains.",
@@ -26,7 +26,7 @@ const CONDITION_DESCRIPTIONS = {
     causes: "Contact dermatitis occurs when the skin reacts to an irritant or allergen, such as soaps, chemicals, or metals, causing redness, itching, and rash.",
 
   },
-    "Seborrheic dermatitis": {
+    "Seborrheic Dermatitis": {
     name: "Seborrheic dermatitis",
     description: "Seborrheic dermatitis, also known as severe dandruff, is a skin condition that causes red, scaly, and flaky patches on areas with more hair, like the scalp, face, chest, and back. It can cause itchiness or discomfort and is called cradle cap in infants.",
     treatment: "Treatment usually involves using prescribed creams to reduce itching and inflammation, along with oral medications when symptoms are more severe or infection is present.",
@@ -82,6 +82,18 @@ const CONDITION_DESCRIPTIONS = {
     causes: "Cold sores are highly contagious and usually spread in childhood through close contact like kissing or sharing personal items. The virus stays in the body for life and can reactivate, but treatment helps reduce the severity and frequency of outbreaks.",
 
   },
+  "Molluscum Contagiosum":{
+    name: "Molluscum Contagiosum",
+    description: "Molluscum contagiosum, also known as molluscum, is a common viral skin infection that causes localized clusters of papules with flat tops and characteristic white cores. Molluscum mostly affects infants and children under the age of 10. People are more likely to get infected with molluscum in warm, overcrowded environments. Molluscum tends to more severely affect children who have atopic dermatitis, or eczema, patients with HIV, and patients with weakened immune systems.",
+    treatment: "Most cases clear on their own as the body fights off the virus, but treatment can be used to speed recovery. Options include physical methods like freezing, gentle removal, or laser procedures, as well as topical solutions that help break down the bumps or control infection.",
+    causes: "Molluscum contagiosum is caused by a poxvirus that spreads through direct skin contact, shared items, scratching or shaving the bumps, and sexual contact in adults."
+  },
+  "Ringworm":{
+    name: "Ringworm",
+    description: "Ringworm is a common name for a superficial fungal infection of the skin. Ringworm appears as a red, ring-shaped, itchy rash on the skin. Fungal infections are caught by direct exposure on the skin from another person or animal with a fungal infection or from a public area where fungus might be residing. Fungal infections on the skin can also spread to other parts of the body so it is important to treat them when you first notice them.",
+    treatment: "Treatment typically involves antifungal creams applied to the affected area, and in more stubborn or widespread cases, oral antifungal medication may be recommended to fully clear the infection.",
+    causes: "Ringworm is caused by a contagious fungal infection spread through direct contact, shared items, or contaminated surfaces."
+  },
   "Vitiligo":{
     name: "Vitiligo",
     description: "A skin condition characterized by the loss of pigment from the skin, often affecting the sun-exposed areas of the body.",
@@ -96,14 +108,14 @@ const CONDITION_DESCRIPTIONS = {
     causes: "Lupus is caused by an overactive immune system that speeds up skin cell growth.",
 
   },
-  "Drug-Induced Pigmentation": {
+  "Drug Induced Pigmentation": {
     name: "Drug-Induced Pigmentation",
     description: "Drug-induced skin pigmentation accounts for 10–20% of acquired hyperpigmentation. Common causes include NSAIDs, phenytoin, antimalarials, amiodarone, antipsychotics, cytotoxic drugs, tetracyclines, and heavy metals. Some drugs can trigger fixed drug eruptions, leaving localized, gradually fading hyperpigmented patches.",
     treatment: "Treatment for drug-induced pigmentation includes topical retinoids, topical steroids, and laser therapy.",
     causes: "Drug-induced skin pigmentation occurs when certain medications or heavy metals interact with skin pigments or accumulate in the skin, sometimes worsened by sunlight, leading to changes in skin color.",
 
   },
-  "Lichen Related Diseases": {
+  "Lichen related diseases": {
     name: "Lichen Related Diseases",
     description: "Lichen is a common skin condition characterized by small, scaly patches of skin.",
     treatment: "Lichen is treated with topical medications, such as topical steroids, topical retinoids, or topical emollients.",
@@ -117,7 +129,7 @@ const CONDITION_DESCRIPTIONS = {
     causes: "Dermatofibromas are small, firm, benign skin bumps, often on the legs, caused by trauma or insect bites. They are usually harmless but can itch or become irritated and show dimpling when pinched.",
 
   },
-  "Digital Mucuous Cyst": {
+  "Digital mucuous cyst": {
     name: "Digital Mucuous Cyst",
     description: "Digital mucous cysts are fluid-filled sacs, a type of ganglion cyst, usually found on finger joints near the fingernail and occasionally on the toes. They move minimally under the skin.",
     treatment: "Digital mucous cysts are persistent skin cysts that often recur and usually require a dermatologist’s treatment for effective management.",
@@ -167,12 +179,6 @@ const CONDITION_DESCRIPTIONS = {
     description: "Hyperpigmentation is a condition where certain areas of the skin become darker than the surrounding skin due to excess melanin production. It can appear as age spots, melasma, freckles, or other dark patches.",
     treatment: "Treatment for hyperpigmentation involves reducing excess pigmentation through targeted skin therapies, which gradually lighten darkened areas over time.",
     causes: "Hyperpigmentation is caused by excess melanin production in the skin, often triggered by sun exposure, inflammation, acne, hormonal changes, or certain medications, resulting in darker patches or spots.",
-  },
-  "Ringworm": {
-    name: "Ringworm",
-    description: "Ringworm is a condition where certain areas of the skin become darker than the surrounding skin due to excess melanin production. It can appear as age spots, melasma, freckles, or other dark patches.",
-    treatment: "Treatment for Ringworm involves reducing excess pigmentation through targeted skin therapies, which gradually lighten darkened areas over time.",
-    causes: "Ringworm is caused by excess melanin production in the skin, often triggered by sun exposure, inflammation, acne, hormonal changes, or certain medications, resulting in darker patches or spots.",
   }
 }
 

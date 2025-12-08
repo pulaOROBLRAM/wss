@@ -1,0 +1,337 @@
+.how-to-use {
+  padding: 6rem 0;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  position: relative;
+}
+
+.how-to-use-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.how-to-use-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.how-to-use-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #2563eb, #7c3aed, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.how-to-use-subtitle {
+  font-size: 1.25rem;
+  color: #64748b;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* --- Simple three‑card steps layout (matches provided designs) --- */
+.howto-steps { margin-top: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+.howto-card { background: #fff; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); display: grid; grid-template-columns: 1fr 1fr; align-items: stretch; overflow: hidden; }
+.howto-card.reverse { grid-template-columns: 1fr 1fr; }
+.howto-image { position: relative; }
+.howto-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.howto-info { background: #2d3a68; color: #fff; padding: 2.25rem; display: flex; flex-direction: column; justify-content: center; position: relative; }
+.howto-title { font-weight: 700; font-size: 2rem; margin-bottom: 0.5rem; }
+.howto-heading { font-size: 1.15rem; font-weight: 600; line-height: 1.6; margin: 0.25rem 0 1rem; }
+.howto-tip { color: #e2e8f0; margin: 0; }
+.howto-nav { position: absolute; left: 1.25rem; right: 1.25rem; bottom: 1.25rem; display: flex; justify-content: space-between; color: #c7d2fe; font-weight: 700; }
+.howto-arrow.left { text-align: left; }
+.howto-arrow.right { text-align: right; }
+
+/* legacy interactive nav hidden in new design */
+.steps-navigation { display: none; }
+
+.step-nav-item {
+  background: white;
+  border: 2px solid #e2e8f0;
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: slideInUp 0.6s ease-out;
+  animation-delay: var(--step-delay);
+  animation-fill-mode: both;
+}
+
+.step-nav-item:hover {
+  border-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+}
+
+.step-nav-item.active {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  border-color: transparent;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+}
+
+.step-nav-number {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.step-nav-title {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.step-content { display: none; }
+
+.step-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-icon {
+  width: 120px;
+  height: 120px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+.step-icon span {
+  font-size: 3rem;
+  filter: grayscale(1) brightness(0) invert(1);
+}
+
+.step-number {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  z-index: 3;
+}
+
+.step-info {
+  animation: slideInRight 0.6s ease-out;
+}
+
+.step-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+}
+
+.step-description {
+  font-size: 1.1rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.step-details {
+  margin-bottom: 2rem;
+}
+
+.details-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+}
+
+.details-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  color: #64748b;
+}
+
+.detail-icon {
+  width: 20px;
+  height: 20px;
+  background: #10b981;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.step-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.step-action-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.step-action-btn.primary {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: white;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+}
+
+.step-action-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+}
+
+.step-action-btn.secondary {
+  background: white;
+  color: #2563eb;
+  border: 2px solid #e2e8f0;
+}
+
+.step-action-btn.secondary:hover {
+  border-color: #2563eb;
+  transform: translateY(-2px);
+}
+
+.process-flow { display: none; }
+
+.flow-title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: white;
+}
+
+.flow-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.flow-step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.flow-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.flow-icon span {
+  font-size: 1.5rem;
+  filter: grayscale(1) brightness(0) invert(1);
+}
+
+.flow-content {
+  flex: 1;
+}
+
+.flow-number {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.flow-title-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+}
+
+.flow-arrow {
+  color: #94a3b8;
+  margin: 0 0.5rem;
+}
+
+.flow-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .how-to-use {
+    padding: 4rem 0;
+  }
+
+  .how-to-use-title {
+    font-size: 2.5rem;
+  }
+
+  .how-to-use-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .howto-card { grid-template-columns: 1fr; }
+  .howto-info { padding: 1.75rem; }
+}

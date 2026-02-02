@@ -5,6 +5,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './css/SelfAssessment.css';
 import { DISEASES } from './ConditionAttr';
 import { getPersonalizedQuestions } from './selfAssessmentQuestions'
+import { getTargetCategory } from './utils/categoryUtils';
+import { CATEGORY_THRESHOLDS } from './utils/thresholdConfig';
 
 const handleAnswer = (setAnswers, questionId, answer) => {
   setAnswers(prev => ({
@@ -57,17 +59,6 @@ const CATEGORY_SCORE_MAP = {
   'PIGMENTARY': DISEASES.PIGMENTARY,
   'SKIN_CANCER': DISEASES.SKIN_CANCER,
   'ENVIRONMENTAL': DISEASES.ENVIRONMENTAL,
-};
-
-const CATEGORY_THRESHOLDS = {
-  'INFLAMMATORY': 45,
-  'INFECTIOUS': 35,
-  'AUTOIMMUNE': 45,
-  'BENIGN_GROWTH': 40,
-  'PIGMENTARY': 38,
-  'SKIN_CANCER': 60,
-  'ENVIRONMENTAL': 30,
-  'DEFAULT': 40
 };
 
 const calculateWeightedResults = (assessmentAnswers, topPredictionCondition) => {
@@ -366,29 +357,6 @@ function SelfAssessment() {
   );
 }
 
-const getTargetCategory = (topPredictionCondition) => {
-  if (!topPredictionCondition) return 'DEFAULT';
-
-  const condition = topPredictionCondition.toLowerCase();
-
-  const categories = {
-    INFLAMMATORY: ['acne', 'dermatitis'],
-    INFECTIOUS: ['molluscum contagiosum', 'ringworm', 'warts'],
-    AUTOIMMUNE: ['vitiligo'],
-    SKIN_CANCER: ['cancer', 'melanoma', 'carcinoma', 'keratosis'],
-    PIGMENTARY: ['pigmentary', 'melasma', 'hyperpigmentation', 'age spots'],
-    ENVIRONMENTAL: ['environmental', 'poison ivy', 'razor bumps', 'dry skin', 'sun damage']
-  };
-
-  for (const [category, keywords] of Object.entries(categories)) {
-    if (keywords.some(keyword => condition.includes(keyword))) {
-      return category;
-    }
-  }
-  
-  return 'DEFAULT';
-};
-
 export default SelfAssessment;
 export {
   DISEASES,
@@ -398,7 +366,5 @@ export {
   handleAnswer,
   calculateDiseaseAverages,
   calculateWeightedResults,
-  getTargetCategory,
-  checkDiseaseThreshold,
-  CATEGORY_THRESHOLDS
+  checkDiseaseThreshold
 };

@@ -51,7 +51,7 @@ const CONDITION_DESCRIPTIONS = {
     name: "Cellulitis",
     description: "Cellulitis is a bacterial skin infection, usually caused by Staph or Strep bacteria entering through breaks in the skin. It leads to redness, swelling, and pain. Most cases are mild and resolve with oral antibiotics, but severe infections can spread and require urgent medical care. People with worsening symptoms or higher risk of complications should seek prompt treatment.",
     treatment: "Treatment focuses on taking prescribed medication for the full duration, keeping the affected area elevated to reduce swelling, and maintaining proper skin hygiene to support healing and prevent infection.",
-    causes: "Cellulitis is caused by bacteria, most commonly Streptococcus or Staphylococcus aureus, entering through breaks in the skin such as cuts, insect bites, or ulcers. It leads to redness, swelling, warmth, and pain in the affected area.",
+    causes: "Cellulitis is caused b y bacteria, most commonly Streptococcus or Staphylococcus aureus, entering through breaks in the skin such as cuts, insect bites, or ulcers. It leads to redness, swelling, warmth, and pain in the affected area.",
 
   },
   "Bullous Disease": {

@@ -1,0 +1,20 @@
+{
+  "model_type": "EfficientNetB0",
+  "input_shape": [
+    224,
+    224,
+    3
+  ],
+  "dense_units": 256,
+  "dropout_rate": 0.20493691154411037,
+  "base_trainable": true,
+  "num_classes": 7,
+  "layers": [
+    "EfficientNetB0_base",
+    "GlobalAveragePooling2D",
+    "Dropout",
+    "Dense_relu",
+    "Dropout",
+    "Dense_softmax"
+  ]
+}

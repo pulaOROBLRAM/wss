@@ -1,3 +1,5 @@
+import { getTargetCategory } from './utils/categoryUtils';
+
 export const CATEGORY_QUESTIONS = {
   INFLAMMATORY: [
     {
@@ -171,29 +173,6 @@ export const getTopPrediction = (predictions) => {
   }
   
   return '';
-};
-
-export const getTargetCategory = (topPredictionCondition) => {
-  if (!topPredictionCondition) return 'DEFAULT';
-
-  const condition = topPredictionCondition.toLowerCase();
-
-  const categories = {
-    INFLAMMATORY: ['acne', 'dermatitis', 'psoriasis'],
-    INFECTIOUS: ['molluscum contagiosum', 'ringworm', 'warts', 'boils', 'cellulitis', 'folliculitis', 'impetigo'],
-    AUTOIMMUNE: ['vitiligo', 'lupus'],
-    SKIN_CANCER: ['cancer', 'melanoma', 'carcinoma', 'keratosis'],
-    PIGMENTARY: ['pigmentary', 'melasma', 'hyperpigmentation', 'age spots'],
-    ENVIRONMENTAL: ['environmental', 'poison ivy', 'razor bumps', 'dry skin', 'sun damage']
-  };
-
-  for (const [category, keywords] of Object.entries(categories)) {
-    if (keywords.some(keyword => condition.includes(keyword))) {
-      return category;
-    }
-  }
-  
-  return 'DEFAULT';
 };
 
 export const getPersonalizedQuestions = (predictions) => {

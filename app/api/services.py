@@ -215,7 +215,18 @@ class PredictionService:
             if not self._validate_image(image_data):
                 raise ValueError("Invalid image data")
 
-            img = Image.open(BytesIO(image_data)).convert('RGB').resize((224, 224))
+            img = Image.open(BytesIO(image_data)).convert('RGB')
+            w, h = img.size
+            # Ensure at least 224 on both dimensions (resize up preserving aspect ratio if needed)
+            if w < 224 or h < 224:
+                scale = 224 / min(w, h)
+                new_w, new_h = int(round(w * scale)), int(round(h * scale))
+                img = img.resize((new_w, new_h), getattr(Image, 'Resampling', Image).LANCZOS)
+                w, h = img.size
+            # Center crop 224x224
+            left = (w - 224) // 2
+            top = (h - 224) // 2
+            img = img.crop((left, top, left + 224, top + 224))
             img_array = tf.keras.preprocessing.image.img_to_array(img)
             img_array = tf.expand_dims(img_array, 0)
             mode = self.preprocess_mode

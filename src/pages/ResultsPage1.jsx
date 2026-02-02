@@ -12,23 +12,15 @@ import './css/ResultsPage.css';
 
 import {
   calculateWeightedResults,
-  getTargetCategory
+  getTargetCategory as getTargetCategoryFromAssessment
 } from './SelfAssessment';
 
 import {
   CONDITION_DESCRIPTIONS
 } from './MedicalConditions';
 
-const DISPLAY_THRESHOLDS = {
-  'INFLAMMATORY': 25,
-  'INFECTIOUS': 20,
-  'AUTOIMMUNE': 30,
-  'BENIGN_GROWTH': 15,
-  'PIGMENTARY': 25,
-  'SKIN_CANCER': 10,
-  'ENVIRONMENTAL': 20,
-  'DEFAULT': 25
-};
+import { getTargetCategory } from './utils/categoryUtils';
+import { CATEGORY_THRESHOLDS } from './utils/thresholdConfig';
 
 function ResultsPage() {
   const navigate = useNavigate();
@@ -125,16 +117,16 @@ function ResultsPage() {
     if (isAdaptive && diseaseScores && Object.keys(diseaseScores).length > 0) {
       const targetCategory = getTargetCategory(topPrediction.condition);
       const categoryData = diseaseScores;
-      const categoryThreshold = DISPLAY_THRESHOLDS[targetCategory] || DISPLAY_THRESHOLDS.DEFAULT;
+      const categoryThreshold = CATEGORY_THRESHOLDS[targetCategory] || CATEGORY_THRESHOLDS.DEFAULT;
       
       if (Object.keys(categoryData).length > 0) {
-        const top4 = Object.entries(categoryData)
+        const top3 = Object.entries(categoryData)
           .sort((a, b) => b[1] - a[1])
-          .slice(0, 4);
+          .slice(0, 3);
 
-        const totalScore = top4.reduce((sum, [, score]) => sum + score, 0);
+        const totalScore = top3.reduce((sum, [, score]) => sum + score, 0);
         
-        const normalizedResults = top4
+        const normalizedResults = top3
           .map(([disease, score]) => {
             const percentage = totalScore > 0 ? (score / totalScore) * 100 : 0;
             return {
@@ -154,16 +146,16 @@ function ResultsPage() {
       categories.forEach(category => {
         const weightedCategories = calculateWeightedResults(assessmentData, topPrediction.condition);
         const categoryData = weightedCategories[category];
-        const categoryThreshold = DISPLAY_THRESHOLDS[category] || DISPLAY_THRESHOLDS.DEFAULT;
+        const categoryThreshold = CATEGORY_THRESHOLDS[category] || CATEGORY_THRESHOLDS.DEFAULT;
         
         if (categoryData && Object.keys(categoryData).length > 0) {
-          const top4 = Object.entries(categoryData)
+          const top3 = Object.entries(categoryData)
             .sort((a, b) => b[1] - a[1])
-            .slice(0, 4);
+            .slice(0, 3);
 
-          const totalScore = top4.reduce((sum, [, score]) => sum + score, 0);
+          const totalScore = top3.reduce((sum, [, score]) => sum + score, 0);
           
-          const normalizedResults = top4
+          const normalizedResults = top3
             .map(([disease, score]) => {
               const percentage = totalScore > 0 ? (score / totalScore) * 100 : 0;
               return {
@@ -180,7 +172,16 @@ function ResultsPage() {
       });
     }
 
-    return results.sort((a, b) => b.percentage - a.percentage);
+    const sorted = results.sort((a, b) => b.percentage - a.percentage);
+    // Re-normalize so displayed percentages sum to 100
+    const total = sorted.reduce((sum, r) => sum + r.percentage, 0);
+    if (total > 0 && sorted.length > 0) {
+      return sorted.map((r) => ({
+        ...r,
+        percentage: Number(((r.percentage / total) * 100).toFixed(1))
+      }));
+    }
+    return sorted;
   };
 
   const allDiseaseResults = getAllCategoriesResults();

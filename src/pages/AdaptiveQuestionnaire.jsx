@@ -4,6 +4,7 @@ import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './css/SelfAssessment.css';
 import { DISEASES } from './ConditionAttr';
+import { getTargetCategory } from './utils/categoryUtils';
 
 // Question definitions with their attribute mappings
 const QUESTIONS = [
@@ -71,44 +72,6 @@ const CATEGORY_SCORE_MAP = {
   'PIGMENTARY': DISEASES.PIGMENTARY,
   'SKIN_CANCER': DISEASES.SKIN_CANCER,
   'ENVIRONMENTAL': DISEASES.ENVIRONMENTAL,
-};
-
-const getTargetCategory = (topPredictionCondition) => {
-  if (!topPredictionCondition) return null;
-
-  const condition = topPredictionCondition.toLowerCase().trim();
-
-  // Map actual prediction labels to categories
-  const categories = {
-    INFLAMMATORY: ['acne', 'dermatitis', 'atopic_dermatitis', 'contact_dermatitis', 'seborrheic_dermatitis', 'psoriasis', 'acne_keloidalis_nuchae'],
-    INFECTIOUS: ['molluscum contagiosum', 'molluscum_contagiosum', 'ringworm', 'warts', 'boils', 'cellulitis', 'folliculitis', 'impetigo', 'cold_sores', 'cold sores'],
-    AUTOIMMUNE: ['vitiligo', 'lupus', 'drug_induced_pigmentation', 'lichen'],
-    BENIGN_GROWTH: ['dermatofibroma', 'digital_mucous_cyst', 'cyst', 'lipoma', 'keloids'],
-    SKIN_CANCER: ['cancer', 'actinic', 'basal', 'squamous', 'melanoma', 'actinic_keratosis', 'basal_cell_cancer', 'squamous_cell_cancer'],
-    PIGMENTARY: ['pigmentary', 'melasma', 'hyperpigmentation', 'age_spots', 'age spots', 'dyschromia', 'varicose_veins'],
-    ENVIRONMENTAL: ['environmental', 'poison', 'razor', 'dry', 'sun', 'poison_ivy', 'razor_bumps', 'dry_skin', 'hyperhidrosis', 'sun_damage']
-  };
-
-  // First try exact match (handle underscores and spaces)
-  for (const [category, keywords] of Object.entries(categories)) {
-    // Check for exact matches first (accounting for spaces/underscores)
-    const normalizedCondition = condition.replace(/[_\s]/g, '');
-    const exactMatch = keywords.some(keyword => {
-      const normalizedKeyword = keyword.replace(/[_\s]/g, '');
-      return normalizedCondition === normalizedKeyword;
-    });
-    
-    if (exactMatch) {
-      return category;
-    }
-    
-    // Then try partial match
-    if (keywords.some(keyword => condition.includes(keyword) || keyword.includes(condition))) {
-      return category;
-    }
-  }
-  
-  return null;
 };
 
 const getAnswerValue = (answer) => {

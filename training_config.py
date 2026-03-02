@@ -26,7 +26,7 @@ import os
 # DATASET CONFIGURATION
 
 # Change this to your dataset directory path
-DATASET_DIR = '../dataset3/annular'
+DATASET_DIR = '../dataset3/m4_color'
 
 # Training and validation subdirectories (relative to DATASET_DIR)
 TRAIN_SUBDIR = 'a1train'

@@ -4,10 +4,6 @@ Canny algorithm.
 Requires: pip install scikit-image
 
 Dataset must be prepared with split_dataset.py first.
-
-Usage: python dtaset_to_edges_canny.py --root ../dataset3/m1_lesion_form --low 0.05 --high 0.15
-
-Traning settings/config is in the training_config.py file.
 """
 
 import argparse

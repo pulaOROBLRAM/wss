@@ -1,0 +1,4 @@
+0 brown_pigmented
+1 erythematous
+2 skin_colored
+3 white_depigmented
